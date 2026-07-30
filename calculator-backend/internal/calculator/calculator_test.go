@@ -29,6 +29,28 @@ func TestAdd(t *testing.T) {
 	}
 }
 
+func TestSubtract(t *testing.T) {
+	tests := []struct {
+		name    string
+		a, b    float64
+		want    float64
+		wantErr error
+	}{
+		{name: "positive numbers", a: 12, b: 3, want: 9},
+		{name: "negative result", a: 3, b: 12, want: -9},
+		{name: "negative numbers", a: -5, b: -7, want: 2},
+		{name: "zeros", a: 0, b: 0, want: 0},
+		{name: "overflow", a: -math.MaxFloat64, b: math.MaxFloat64, wantErr: ErrNotFinite},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Subtract(tt.a, tt.b)
+			assertResult(t, got, err, tt.want, tt.wantErr)
+		})
+	}
+}
+
 func assertResult(t *testing.T, got float64, err error, want float64, wantErr error) {
 	t.Helper()
 	if wantErr != nil {

@@ -25,6 +25,7 @@ func NewRouter(allowedOrigins []string) *gin.Engine {
 
 	v1 := router.Group("/api/v1")
 	v1.POST("/add", handleBinary(calculator.Add))
+	v1.POST("/subtract", handleBinary(calculator.Subtract))
 
 	return router
 }
