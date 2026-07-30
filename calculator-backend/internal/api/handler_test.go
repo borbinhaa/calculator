@@ -1,0 +1,124 @@
+package api
+
+import (
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+)
+
+// postJSON sends a POST request with a JSON body through the full router stack.
+func postJSON(t *testing.T, path, body string) *httptest.ResponseRecorder {
+	t.Helper()
+	router := newTestRouter()
+	req := httptest.NewRequest(http.MethodPost, path, strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	router.ServeHTTP(rec, req)
+	return rec
+}
+
+// decodeResult extracts the "result" field from a successful response.
+func decodeResult(t *testing.T, rec *httptest.ResponseRecorder) float64 {
+	t.Helper()
+	var body struct {
+		Result float64 `json:"result"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &body); err != nil {
+		t.Fatalf("invalid JSON response: %v (body: %s)", err, rec.Body.String())
+	}
+	return body.Result
+}
+
+// decodeErrorCode extracts the "error.code" field from an error response.
+func decodeErrorCode(t *testing.T, rec *httptest.ResponseRecorder) string {
+	t.Helper()
+	var body struct {
+		Error struct {
+			Code    string `json:"code"`
+			Message string `json:"message"`
+		} `json:"error"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &body); err != nil {
+		t.Fatalf("invalid JSON error response: %v (body: %s)", err, rec.Body.String())
+	}
+	if body.Error.Message == "" {
+		t.Fatalf("error response must include a message (body: %s)", rec.Body.String())
+	}
+	return body.Error.Code
+}
+
+func TestOperationEndpoints(t *testing.T) {
+	tests := []struct {
+		name string
+		path string
+		body string
+		want float64
+	}{
+		{name: "add", path: "/api/v1/add", body: `{"value1": 12, "value2": 3}`, want: 15},
+		{name: "add zeros", path: "/api/v1/add", body: `{"value1": 0, "value2": 0}`, want: 0},
+		{name: "add negatives", path: "/api/v1/add", body: `{"value1": -2.5, "value2": -1.5}`, want: -4},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rec := postJSON(t, tt.path, tt.body)
+			if rec.Code != http.StatusOK {
+				t.Fatalf("expected status 200, got %d (body: %s)", rec.Code, rec.Body.String())
+			}
+			if got := decodeResult(t, rec); got != tt.want {
+				t.Fatalf("expected result %v, got %v", tt.want, got)
+			}
+		})
+	}
+}
+
+func TestInvalidRequests(t *testing.T) {
+	tests := []struct {
+		name     string
+		path     string
+		body     string
+		wantCode string
+	}{
+		{name: "malformed JSON", path: "/api/v1/add", body: `{`, wantCode: "invalid_request"},
+		{name: "missing operand", path: "/api/v1/add", body: `{"value1": 1}`, wantCode: "invalid_request"},
+		{name: "non-numeric operand", path: "/api/v1/add", body: `{"value1": "x", "value2": 2}`, wantCode: "invalid_request"},
+		{name: "empty body", path: "/api/v1/add", body: ``, wantCode: "invalid_request"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rec := postJSON(t, tt.path, tt.body)
+			if rec.Code != http.StatusBadRequest {
+				t.Fatalf("expected status 400, got %d (body: %s)", rec.Code, rec.Body.String())
+			}
+			if code := decodeErrorCode(t, rec); code != tt.wantCode {
+				t.Fatalf("expected error code %q, got %q", tt.wantCode, code)
+			}
+		})
+	}
+}
+
+func TestDomainErrors(t *testing.T) {
+	tests := []struct {
+		name     string
+		path     string
+		body     string
+		wantCode string
+	}{
+		{name: "add overflow", path: "/api/v1/add", body: `{"value1": 1.7976931348623157e308, "value2": 1.7976931348623157e308}`, wantCode: "result_not_finite"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rec := postJSON(t, tt.path, tt.body)
+			if rec.Code != http.StatusUnprocessableEntity {
+				t.Fatalf("expected status 422, got %d (body: %s)", rec.Code, rec.Body.String())
+			}
+			if code := decodeErrorCode(t, rec); code != tt.wantCode {
+				t.Fatalf("expected error code %q, got %q", tt.wantCode, code)
+			}
+		})
+	}
+}

@@ -5,9 +5,10 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	"calculator-backend/internal/calculator"
 )
 
-// NewRouter builds the Gin engine with middleware and all API routes.
 func NewRouter(allowedOrigins []string) *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Logger(), gin.Recovery())
@@ -21,6 +22,9 @@ func NewRouter(allowedOrigins []string) *gin.Engine {
 	router.GET("/healthz", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
+
+	v1 := router.Group("/api/v1")
+	v1.POST("/add", handleBinary(calculator.Add))
 
 	return router
 }

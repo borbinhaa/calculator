@@ -1,0 +1,46 @@
+package calculator
+
+import (
+	"errors"
+	"math"
+	"testing"
+)
+
+func TestAdd(t *testing.T) {
+	tests := []struct {
+		name    string
+		a, b    float64
+		want    float64
+		wantErr error
+	}{
+		{name: "positive numbers", a: 12, b: 3, want: 15},
+		{name: "negative numbers", a: -5, b: -7, want: -12},
+		{name: "mixed signs", a: 10, b: -4, want: 6},
+		{name: "zeros", a: 0, b: 0, want: 0},
+		{name: "decimals", a: 0.1, b: 0.2, want: 0.30000000000000004},
+		{name: "overflow", a: math.MaxFloat64, b: math.MaxFloat64, wantErr: ErrNotFinite},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Add(tt.a, tt.b)
+			assertResult(t, got, err, tt.want, tt.wantErr)
+		})
+	}
+}
+
+func assertResult(t *testing.T, got float64, err error, want float64, wantErr error) {
+	t.Helper()
+	if wantErr != nil {
+		if !errors.Is(err, wantErr) {
+			t.Fatalf("expected error %v, got %v", wantErr, err)
+		}
+		return
+	}
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if got != want {
+		t.Fatalf("expected %v, got %v", want, got)
+	}
+}
