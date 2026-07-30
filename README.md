@@ -15,7 +15,7 @@ is resolved by the server. The browser never computes a result on its own.
 
 - **Operations:** addition, subtraction, multiplication, division, exponentiation,
   square root, percentage
-- **Tests:** 85 on the backend, 65 on the frontend
+- **Tests:** 85 on the backend, 77 on the frontend
 - **Coverage:** 100% of every function in the backend's `api` and `calculator`
   packages; 100% of lines and functions on the frontend
 
@@ -31,8 +31,8 @@ calculator/
 │   └── internal/calculator/      # domain: pure arithmetic, no HTTP awareness
 ├── calculator-frontend/          # React + TypeScript SPA
 │   ├── src/api/                  # typed API client
-│   ├── src/hooks/                # calculator state machine
-│   ├── src/components/           # Key, Keypad, Display, ErrorBanner, Calculator
+│   ├── src/hooks/                # calculator state machine, theme preference
+│   ├── src/components/           # Calculator, Keypad, Key, Display, ThemeToggle
 │   └── src/styles/               # design tokens and base styles
 ├── docker-compose.yml
 ├── README.md
@@ -121,8 +121,8 @@ npm run test:coverage     # writes coverage/index.html
 |---|---|
 | Lines | 100% |
 | Functions | 100% |
-| Statements | 99.3% |
-| Branches | 95.6% |
+| Statements | 99.4% |
+| Branches | 94.5% |
 
 Two levels are covered on both sides: **unit tests** for pure logic (the
 arithmetic functions, the state machine) and **integration tests** exercising the
@@ -221,6 +221,9 @@ Click the keys or use the keyboard:
 Operations chain left to right: typing `2 + 3 ×` resolves `2 + 3` first and
 carries `5` into the next operation, the way a physical calculator behaves.
 
+The app follows the operating system's light or dark setting, and the button in
+the header overrides it. That choice is remembered across reloads.
+
 ---
 
 ## Design decisions
@@ -287,13 +290,21 @@ pure reducer, which is why chaining, decimal entry, and error recovery can be
 tested without rendering anything.
 
 **Styling is plain CSS driven by semantic tokens.** No component contains a hex
-value; they reference roles like `--color-accent` and `--color-danger`, defined
-once for light and once for dark. Light and dark are authored as a pair rather
-than by inverting: the accent key is white-on-orange in light and near-black-on-
-orange in dark, because those are the combinations that clear WCAG AA contrast in
-their own theme. Touch targets are 48px, focus rings are visible, the display
-uses tabular figures so digits do not jitter as they change, and
-`prefers-reduced-motion` disables animation.
+value; they reference roles like `--color-accent` and `--color-danger`. Each role
+carries both themes in a single `light-dark()` pair, so there is no duplicated
+palette to keep in sync and switching theme only changes `color-scheme`. Light
+and dark are authored together rather than by inverting: the accent key is
+white-on-orange in light and near-black-on-orange in dark, because those are the
+combinations that clear WCAG AA contrast in their own theme. Touch targets are
+48px, focus rings are visible, the display uses tabular figures so digits do not
+jitter as they change, and `prefers-reduced-motion` disables animation.
+
+**The theme follows the system until the user disagrees.** No explicit choice
+means no stored value and no `data-theme` attribute, so the CSS tracks
+`prefers-color-scheme` — including live changes while the app is open. Pressing
+the toggle pins a theme and persists it. A four-line inline script in
+`index.html` applies a stored theme before the first paint; without it the page
+would render in the system theme and visibly swap once React mounted.
 
 **Docker images carry only what they need.** The backend compiles to a static
 binary and ships on `distroless/static` — no shell, no package manager, non-root

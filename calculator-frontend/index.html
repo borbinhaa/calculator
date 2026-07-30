@@ -15,6 +15,16 @@
     />
   </head>
   <body>
+    <script>
+     try {
+        var savedTheme = localStorage.getItem('calculator-theme')
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+          document.documentElement.dataset.theme = savedTheme
+        }
+      } catch (error) {
+        /* storage unavailable: fall back to the system preference */
+      }
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

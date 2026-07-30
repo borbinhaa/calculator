@@ -5,6 +5,10 @@
 }
 
 .app__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
   padding-inline: var(--space-1);
 }
 

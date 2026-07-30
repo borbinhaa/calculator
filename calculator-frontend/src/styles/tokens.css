@@ -2,13 +2,18 @@
  * Design tokens.
  *
  * Colours are exposed as semantic roles (surface, accent, danger...) rather than
- * raw values so components never hardcode a hex. Light and dark are defined as a
- * pair: each theme picks its own foreground for a given background, which is why
- * --color-on-accent is white on light and near-black on dark — both clear the
- * WCAG AA contrast threshold against their own accent.
+ * raw values so components never hardcode a hex. Each role carries both themes
+ * in a light-dark() pair, which means switching theme is a matter of changing
+ * color-scheme — there is no second copy of the palette to keep in sync.
+ *
+ * The pairs are authored together rather than inverted: --color-on-accent is
+ * white on light and near-black on dark because those are the combinations that
+ * clear the WCAG AA contrast threshold against their own accent.
  */
 
 :root {
+  /* "light dark" follows the operating system. useTheme pins data-theme on the
+     root element once the user picks a side. */
   color-scheme: light dark;
 
   /* Typography — mono for figures so digits keep a fixed width as they change */
@@ -43,44 +48,33 @@
   --tap-target: 3rem;
   --app-width: 23rem;
 
-  /* Light theme */
-  --color-canvas: #eef0f4;
-  --color-surface: #ffffff;
-  --color-surface-sunken: #f8fafc;
-  --color-text: #0f172a;
-  --color-text-muted: #475569;
-  --color-border: #dfe3ea;
-  --color-key: #ffffff;
-  --color-key-hover: #f1f5f9;
-  --color-key-function: #e2e8f0;
-  --color-key-function-hover: #cbd5e1;
-  --color-accent: #c2410c;
-  --color-accent-hover: #9a3412;
-  --color-on-accent: #ffffff;
-  --color-danger: #b91c1c;
-  --color-danger-surface: #fef2f2;
-  --color-focus: #1d4ed8;
-  --shadow-panel: 0 1px 2px rgb(15 23 42 / 0.06), 0 12px 32px rgb(15 23 42 / 0.1);
+  /* Colour roles — light-dark(light value, dark value) */
+  --color-canvas: light-dark(#eef0f4, #0b0f14);
+  --color-surface: light-dark(#ffffff, #161b22);
+  --color-surface-sunken: light-dark(#f8fafc, #10151b);
+  --color-text: light-dark(#0f172a, #f1f5f9);
+  --color-text-muted: light-dark(#475569, #a3b0c2);
+  --color-border: light-dark(#dfe3ea, #2a323d);
+  --color-key: light-dark(#ffffff, #222932);
+  --color-key-hover: light-dark(#f1f5f9, #2c3540);
+  --color-key-function: light-dark(#e2e8f0, #323b47);
+  --color-key-function-hover: light-dark(#cbd5e1, #3d4854);
+  --color-accent: light-dark(#c2410c, #f97316);
+  --color-accent-hover: light-dark(#9a3412, #fb8c3c);
+  --color-on-accent: light-dark(#ffffff, #1c1210);
+  --color-danger: light-dark(#b91c1c, #fca5a5);
+  --color-danger-surface: light-dark(#fef2f2, #3f1d1d);
+  --color-focus: light-dark(#1d4ed8, #93c5fd);
+  --shadow-panel:
+    0 1px 2px light-dark(rgb(15 23 42 / 0.06), rgb(0 0 0 / 0.4)),
+    0 14px 36px light-dark(rgb(15 23 42 / 0.1), rgb(0 0 0 / 0.45));
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-canvas: #0b0f14;
-    --color-surface: #161b22;
-    --color-surface-sunken: #10151b;
-    --color-text: #f1f5f9;
-    --color-text-muted: #a3b0c2;
-    --color-border: #2a323d;
-    --color-key: #222932;
-    --color-key-hover: #2c3540;
-    --color-key-function: #323b47;
-    --color-key-function-hover: #3d4854;
-    --color-accent: #f97316;
-    --color-accent-hover: #fb8c3c;
-    --color-on-accent: #1c1210;
-    --color-danger: #fca5a5;
-    --color-danger-surface: #3f1d1d;
-    --color-focus: #93c5fd;
-    --shadow-panel: 0 1px 2px rgb(0 0 0 / 0.4), 0 16px 40px rgb(0 0 0 / 0.45);
-  }
+/* An explicit choice overrides the system preference. */
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
 }
