@@ -47,8 +47,11 @@ func handleBinary(op func(a, b float64) (float64, error)) gin.HandlerFunc {
 
 func respondDomainError(c *gin.Context, err error) {
 	code := "invalid_operation"
-	if errors.Is(err, calculator.ErrNotFinite) {
+	switch {
+	case errors.Is(err, calculator.ErrNotFinite):
 		code = "result_not_finite"
+	case errors.Is(err, calculator.ErrDivisionByZero):
+		code = "division_by_zero"
 	}
 	respondError(c, http.StatusUnprocessableEntity, code, err.Error())
 }

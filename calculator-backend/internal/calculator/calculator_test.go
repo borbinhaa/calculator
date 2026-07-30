@@ -74,6 +74,30 @@ func TestMultiply(t *testing.T) {
 	}
 }
 
+func TestDivide(t *testing.T) {
+	tests := []struct {
+		name    string
+		a, b    float64
+		want    float64
+		wantErr error
+	}{
+		{name: "exact division", a: 12, b: 3, want: 4},
+		{name: "fractional result", a: 7, b: 2, want: 3.5},
+		{name: "zero numerator", a: 0, b: 5, want: 0},
+		{name: "negative divisor", a: 10, b: -2, want: -5},
+		{name: "division by zero", a: 12, b: 0, wantErr: ErrDivisionByZero},
+		{name: "zero by zero", a: 0, b: 0, wantErr: ErrDivisionByZero},
+		{name: "overflow", a: math.MaxFloat64, b: 0.5, wantErr: ErrNotFinite},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Divide(tt.a, tt.b)
+			assertResult(t, got, err, tt.want, tt.wantErr)
+		})
+	}
+}
+
 func assertResult(t *testing.T, got float64, err error, want float64, wantErr error) {
 	t.Helper()
 	if wantErr != nil {
