@@ -29,6 +29,10 @@ func Divide(a, b float64) (float64, error) {
 	return finite(a / b)
 }
 
+func Power(a, b float64) (float64, error) {
+	return finite(math.Pow(a, b))
+}
+
 // finite guards a result against overflow into ±Inf or NaN.
 func finite(result float64) (float64, error) {
 	if math.IsInf(result, 0) || math.IsNaN(result) {

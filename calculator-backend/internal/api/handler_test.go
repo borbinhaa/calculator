@@ -65,6 +65,8 @@ func TestOperationEndpoints(t *testing.T) {
 		{name: "multiply by zero", path: "/api/v1/multiply", body: `{"value1": 12, "value2": 0}`, want: 0},
 		{name: "divide", path: "/api/v1/divide", body: `{"value1": 12, "value2": 3}`, want: 4},
 		{name: "divide fractional", path: "/api/v1/divide", body: `{"value1": 7, "value2": 2}`, want: 3.5},
+		{name: "power", path: "/api/v1/power", body: `{"value1": 2, "value2": 10}`, want: 1024},
+		{name: "power fractional exponent", path: "/api/v1/power", body: `{"value1": 9, "value2": 0.5}`, want: 3},
 	}
 
 	for _, tt := range tests {
@@ -116,6 +118,7 @@ func TestDomainErrors(t *testing.T) {
 		{name: "add overflow", path: "/api/v1/add", body: `{"value1": 1.7976931348623157e308, "value2": 1.7976931348623157e308}`, wantCode: "result_not_finite"},
 		{name: "multiply overflow", path: "/api/v1/multiply", body: `{"value1": 1.7976931348623157e308, "value2": 2}`, wantCode: "result_not_finite"},
 		{name: "division by zero", path: "/api/v1/divide", body: `{"value1": 12, "value2": 0}`, wantCode: "division_by_zero"},
+		{name: "power not finite", path: "/api/v1/power", body: `{"value1": -4, "value2": 0.5}`, wantCode: "result_not_finite"},
 	}
 
 	for _, tt := range tests {

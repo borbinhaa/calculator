@@ -98,6 +98,32 @@ func TestDivide(t *testing.T) {
 	}
 }
 
+func TestPower(t *testing.T) {
+	tests := []struct {
+		name    string
+		a, b    float64
+		want    float64
+		wantErr error
+	}{
+		{name: "integer exponent", a: 2, b: 10, want: 1024},
+		{name: "exponent zero", a: 5, b: 0, want: 1},
+		{name: "zero to the zero", a: 0, b: 0, want: 1},
+		{name: "negative exponent", a: 2, b: -2, want: 0.25},
+		{name: "fractional exponent", a: 9, b: 0.5, want: 3},
+		{name: "negative base integer exponent", a: -2, b: 3, want: -8},
+		{name: "negative base fractional exponent", a: -4, b: 0.5, wantErr: ErrNotFinite},
+		{name: "zero to negative exponent", a: 0, b: -1, wantErr: ErrNotFinite},
+		{name: "overflow", a: 10, b: 400, wantErr: ErrNotFinite},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Power(tt.a, tt.b)
+			assertResult(t, got, err, tt.want, tt.wantErr)
+		})
+	}
+}
+
 func assertResult(t *testing.T, got float64, err error, want float64, wantErr error) {
 	t.Helper()
 	if wantErr != nil {
