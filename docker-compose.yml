@@ -1,0 +1,20 @@
+services:
+  backend:
+    build: ./calculator-backend
+    environment:
+      PORT: 8080
+      # Browsers send an Origin header even on same-origin POSTs, and the API
+      # rejects origins it does not know. This is the origin nginx is published on.
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
+    # Only nginx needs to reach the API, so the port stays on the internal network.
+    expose:
+      - "8080"
+    restart: unless-stopped
+
+  frontend:
+    build: ./calculator-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
