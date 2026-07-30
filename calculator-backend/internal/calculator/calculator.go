@@ -8,6 +8,7 @@ import (
 var (
 	ErrNotFinite      = errors.New("result is not a finite number")
 	ErrDivisionByZero = errors.New("division by zero is not allowed")
+	ErrNegativeSqrt   = errors.New("square root of a negative number is not allowed")
 )
 
 func Add(a, b float64) (float64, error) {
@@ -31,6 +32,13 @@ func Divide(a, b float64) (float64, error) {
 
 func Power(a, b float64) (float64, error) {
 	return finite(math.Pow(a, b))
+}
+
+func Sqrt(a float64) (float64, error) {
+	if a < 0 {
+		return 0, ErrNegativeSqrt
+	}
+	return finite(math.Sqrt(a))
 }
 
 // finite guards a result against overflow into ±Inf or NaN.

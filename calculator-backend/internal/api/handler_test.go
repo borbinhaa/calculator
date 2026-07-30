@@ -67,6 +67,8 @@ func TestOperationEndpoints(t *testing.T) {
 		{name: "divide fractional", path: "/api/v1/divide", body: `{"value1": 7, "value2": 2}`, want: 3.5},
 		{name: "power", path: "/api/v1/power", body: `{"value1": 2, "value2": 10}`, want: 1024},
 		{name: "power fractional exponent", path: "/api/v1/power", body: `{"value1": 9, "value2": 0.5}`, want: 3},
+		{name: "sqrt", path: "/api/v1/sqrt", body: `{"value1": 9}`, want: 3},
+		{name: "sqrt of zero", path: "/api/v1/sqrt", body: `{"value1": 0}`, want: 0},
 	}
 
 	for _, tt := range tests {
@@ -93,6 +95,7 @@ func TestInvalidRequests(t *testing.T) {
 		{name: "missing operand", path: "/api/v1/add", body: `{"value1": 1}`, wantCode: "invalid_request"},
 		{name: "non-numeric operand", path: "/api/v1/add", body: `{"value1": "x", "value2": 2}`, wantCode: "invalid_request"},
 		{name: "empty body", path: "/api/v1/add", body: ``, wantCode: "invalid_request"},
+		{name: "sqrt missing operand", path: "/api/v1/sqrt", body: `{}`, wantCode: "invalid_request"},
 	}
 
 	for _, tt := range tests {
@@ -119,6 +122,7 @@ func TestDomainErrors(t *testing.T) {
 		{name: "multiply overflow", path: "/api/v1/multiply", body: `{"value1": 1.7976931348623157e308, "value2": 2}`, wantCode: "result_not_finite"},
 		{name: "division by zero", path: "/api/v1/divide", body: `{"value1": 12, "value2": 0}`, wantCode: "division_by_zero"},
 		{name: "power not finite", path: "/api/v1/power", body: `{"value1": -4, "value2": 0.5}`, wantCode: "result_not_finite"},
+		{name: "sqrt of negative", path: "/api/v1/sqrt", body: `{"value1": -9}`, wantCode: "negative_square_root"},
 	}
 
 	for _, tt := range tests {

@@ -124,6 +124,28 @@ func TestPower(t *testing.T) {
 	}
 }
 
+func TestSqrt(t *testing.T) {
+	tests := []struct {
+		name    string
+		a       float64
+		want    float64
+		wantErr error
+	}{
+		{name: "perfect square", a: 9, want: 3},
+		{name: "zero", a: 0, want: 0},
+		{name: "irrational result", a: 2, want: 1.4142135623730951},
+		{name: "decimal", a: 2.25, want: 1.5},
+		{name: "negative number", a: -9, wantErr: ErrNegativeSqrt},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Sqrt(tt.a)
+			assertResult(t, got, err, tt.want, tt.wantErr)
+		})
+	}
+}
+
 func assertResult(t *testing.T, got float64, err error, want float64, wantErr error) {
 	t.Helper()
 	if wantErr != nil {

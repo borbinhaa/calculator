@@ -14,6 +14,10 @@ type binaryRequest struct {
 	Value2 *float64 `json:"value2" binding:"required"`
 }
 
+type unaryRequest struct {
+	Value1 *float64 `json:"value1" binding:"required"`
+}
+
 type resultResponse struct {
 	Result float64 `json:"result"`
 }
@@ -45,6 +49,24 @@ func handleBinary(op func(a, b float64) (float64, error)) gin.HandlerFunc {
 	}
 }
 
+func handleUnary(op func(a float64) (float64, error)) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req unaryRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			respondError(c, http.StatusBadRequest, "invalid_request",
+				`body must be a JSON object with numeric field "value1"`)
+			return
+		}
+
+		result, err := op(*req.Value1)
+		if err != nil {
+			respondDomainError(c, err)
+			return
+		}
+		c.JSON(http.StatusOK, resultResponse{Result: result})
+	}
+}
+
 func respondDomainError(c *gin.Context, err error) {
 	code := "invalid_operation"
 	switch {
@@ -52,6 +74,8 @@ func respondDomainError(c *gin.Context, err error) {
 		code = "result_not_finite"
 	case errors.Is(err, calculator.ErrDivisionByZero):
 		code = "division_by_zero"
+	case errors.Is(err, calculator.ErrNegativeSqrt):
+		code = "negative_square_root"
 	}
 	respondError(c, http.StatusUnprocessableEntity, code, err.Error())
 }
