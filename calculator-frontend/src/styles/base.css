@@ -15,7 +15,11 @@ html {
 body {
   min-height: 100dvh;
   display: grid;
-  place-items: center;
+  /* A definite column width keeps the calculator from resizing itself around
+     whatever number is on the display; long results scroll inside it instead. */
+  grid-template-columns: min(100%, var(--app-width));
+  justify-content: center;
+  align-content: center;
   padding: var(--space-4);
   background-color: var(--color-canvas);
   color: var(--color-text);

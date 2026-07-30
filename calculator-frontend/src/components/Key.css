@@ -1,0 +1,49 @@
+.key {
+  min-height: var(--tap-target);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-key);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.key:hover:not(:disabled) {
+  background-color: var(--color-key-hover);
+}
+
+/* Scale is paint-only, so pressing a key never nudges the ones around it. */
+.key:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.key:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.key--function {
+  border-color: transparent;
+  background-color: var(--color-key-function);
+}
+
+.key--function:hover:not(:disabled) {
+  background-color: var(--color-key-function-hover);
+}
+
+.key--accent {
+  border-color: transparent;
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 700;
+}
+
+.key--accent:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+}

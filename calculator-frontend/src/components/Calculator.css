@@ -1,0 +1,17 @@
+.calculator {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-panel);
+}
+
+@media (min-width: 24rem) {
+  .calculator {
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+}

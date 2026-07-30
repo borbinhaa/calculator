@@ -41,6 +41,7 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   --tap-target: 3rem;
+  --app-width: 23rem;
 
   /* Light theme */
   --color-canvas: #eef0f4;
