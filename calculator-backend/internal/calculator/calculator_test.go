@@ -146,6 +146,30 @@ func TestSqrt(t *testing.T) {
 	}
 }
 
+func TestPercentage(t *testing.T) {
+	tests := []struct {
+		name    string
+		a, b    float64
+		want    float64
+		wantErr error
+	}{
+		{name: "ten percent", a: 10, b: 200, want: 20},
+		{name: "fifty percent", a: 50, b: 80, want: 40},
+		{name: "zero percent", a: 0, b: 500, want: 0},
+		{name: "over one hundred percent", a: 150, b: 40, want: 60},
+		{name: "fractional percent", a: 12.5, b: 80, want: 10},
+		{name: "negative percent", a: -10, b: 200, want: -20},
+		{name: "overflow", a: math.MaxFloat64, b: 200, wantErr: ErrNotFinite},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Percentage(tt.a, tt.b)
+			assertResult(t, got, err, tt.want, tt.wantErr)
+		})
+	}
+}
+
 func assertResult(t *testing.T, got float64, err error, want float64, wantErr error) {
 	t.Helper()
 	if wantErr != nil {

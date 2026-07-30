@@ -69,6 +69,8 @@ func TestOperationEndpoints(t *testing.T) {
 		{name: "power fractional exponent", path: "/api/v1/power", body: `{"value1": 9, "value2": 0.5}`, want: 3},
 		{name: "sqrt", path: "/api/v1/sqrt", body: `{"value1": 9}`, want: 3},
 		{name: "sqrt of zero", path: "/api/v1/sqrt", body: `{"value1": 0}`, want: 0},
+		{name: "percentage", path: "/api/v1/percentage", body: `{"value1": 10, "value2": 200}`, want: 20},
+		{name: "percentage fractional", path: "/api/v1/percentage", body: `{"value1": 12.5, "value2": 80}`, want: 10},
 	}
 
 	for _, tt := range tests {
