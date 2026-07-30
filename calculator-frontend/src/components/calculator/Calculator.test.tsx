@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { CalculatorApiError } from '../api/client'
+import { CalculatorApiError } from '../../api/client'
 import { Calculator } from './Calculator'
 
 const { calculateBinary, calculateUnary } = vi.hoisted(() => ({
@@ -10,8 +10,8 @@ const { calculateBinary, calculateUnary } = vi.hoisted(() => ({
   calculateUnary: vi.fn(),
 }))
 
-vi.mock('../api/client', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('../api/client')>()),
+vi.mock('../../api/client', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../api/client')>()),
   calculateBinary,
   calculateUnary,
 }))

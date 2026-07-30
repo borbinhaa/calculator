@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import type { BinaryOperation } from '../api/client'
-import { useCalculator } from '../hooks/useCalculator'
+import type { BinaryOperation } from '../../api/client'
+import { useCalculator } from '../../hooks/useCalculator'
+import { ErrorBanner } from '../ui/ErrorBanner'
 import { Display } from './Display'
-import { ErrorBanner } from './ErrorBanner'
 import { Keypad } from './Keypad'
 import './Calculator.css'
 

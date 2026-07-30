@@ -1,5 +1,5 @@
-import { Calculator } from './components/Calculator'
-import { ThemeToggle } from './components/ThemeToggle'
+import { Calculator } from './components/calculator/Calculator'
+import { ThemeToggle } from './components/ui/ThemeToggle'
 import { useTheme } from './hooks/useTheme'
 import './App.css'
 

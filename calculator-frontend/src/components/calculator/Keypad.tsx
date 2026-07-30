@@ -1,5 +1,5 @@
-import type { BinaryOperation, UnaryOperation } from '../api/client'
-import { Key, type KeyVariant } from './Key'
+import type { BinaryOperation, UnaryOperation } from '../../api/client'
+import { Key, type KeyVariant } from '../ui/Key'
 import './Keypad.css'
 
 export type KeypadHandlers = {
@@ -23,7 +23,7 @@ type KeySpec = {
 }
 
 function digitKey(digit: string): KeySpec {
-  return { label: digit, variant: 'digit', press: (h) => h.onDigit(digit) }
+  return { label: digit, variant: 'default', press: (h) => h.onDigit(digit) }
 }
 
 /**
@@ -32,34 +32,34 @@ function digitKey(digit: string): KeySpec {
  */
 const KEYPAD_LAYOUT: KeySpec[][] = [
   [
-    { label: 'AC', description: 'Clear', variant: 'function', press: (h) => h.onClear() },
-    { label: '√', description: 'Square root', variant: 'function', press: (h) => h.onUnary('sqrt') },
-    { label: 'xʸ', description: 'Power', variant: 'function', press: (h) => h.onOperation('power') },
-    { label: '÷', description: 'Divide', variant: 'accent', press: (h) => h.onOperation('divide') },
+    { label: 'AC', description: 'Clear', variant: 'secondary', press: (h) => h.onClear() },
+    { label: '√', description: 'Square root', variant: 'secondary', press: (h) => h.onUnary('sqrt') },
+    { label: 'xʸ', description: 'Power', variant: 'secondary', press: (h) => h.onOperation('power') },
+    { label: '÷', description: 'Divide', variant: 'primary', press: (h) => h.onOperation('divide') },
   ],
   [
     digitKey('7'),
     digitKey('8'),
     digitKey('9'),
-    { label: '×', description: 'Multiply', variant: 'accent', press: (h) => h.onOperation('multiply') },
+    { label: '×', description: 'Multiply', variant: 'primary', press: (h) => h.onOperation('multiply') },
   ],
   [
     digitKey('4'),
     digitKey('5'),
     digitKey('6'),
-    { label: '−', description: 'Subtract', variant: 'accent', press: (h) => h.onOperation('subtract') },
+    { label: '−', description: 'Subtract', variant: 'primary', press: (h) => h.onOperation('subtract') },
   ],
   [
     digitKey('1'),
     digitKey('2'),
     digitKey('3'),
-    { label: '+', description: 'Add', variant: 'accent', press: (h) => h.onOperation('add') },
+    { label: '+', description: 'Add', variant: 'primary', press: (h) => h.onOperation('add') },
   ],
   [
-    { label: '%', description: 'Percentage', variant: 'function', press: (h) => h.onOperation('percentage') },
+    { label: '%', description: 'Percentage', variant: 'secondary', press: (h) => h.onOperation('percentage') },
     digitKey('0'),
-    { label: '.', description: 'Decimal point', variant: 'digit', press: (h) => h.onDecimal() },
-    { label: '=', description: 'Equals', variant: 'accent', press: (h) => h.onEvaluate() },
+    { label: '.', description: 'Decimal point', variant: 'default', press: (h) => h.onDecimal() },
+    { label: '=', description: 'Equals', variant: 'primary', press: (h) => h.onEvaluate() },
   ],
 ]
 

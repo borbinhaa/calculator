@@ -13,7 +13,7 @@ import {
   initialState,
   type CalculatorAction,
   type CalculatorState,
-} from './calculatorReducer'
+} from '../state/calculatorReducer'
 
 export type Calculator = CalculatorState & {
   inputDigit: (digit: string) => void

@@ -1,6 +1,6 @@
 import './Key.css'
 
-export type KeyVariant = 'digit' | 'function' | 'accent'
+export type KeyVariant = 'default' | 'secondary' | 'primary'
 
 export type KeyProps = {
   label: string
@@ -14,7 +14,7 @@ export type KeyProps = {
 export function Key({
   label,
   onPress,
-  variant = 'digit',
+  variant = 'default',
   description,
   disabled = false,
 }: KeyProps) {

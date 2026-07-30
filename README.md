@@ -31,8 +31,11 @@ calculator/
 │   └── internal/calculator/      # domain: pure arithmetic, no HTTP awareness
 ├── calculator-frontend/          # React + TypeScript SPA
 │   ├── src/api/                  # typed API client
-│   ├── src/hooks/                # calculator state machine, theme preference
-│   ├── src/components/           # Calculator, Keypad, Key, Display, ThemeToggle
+│   ├── src/state/                # pure calculator state machine (reducer)
+│   ├── src/hooks/                # useCalculator, useTheme
+│   ├── src/components/
+│   │   ├── calculator/           # feature components: Calculator, Display, Keypad
+│   │   └── ui/                   # domain-free primitives: Key, ErrorBanner, ThemeToggle
 │   └── src/styles/               # design tokens and base styles
 ├── docker-compose.yml
 ├── README.md
@@ -288,6 +291,23 @@ is described as data rather than markup; `Display` and `ErrorBanner` take values
 Only `Calculator` knows the `useCalculator` hook exists. The state machine is a
 pure reducer, which is why chaining, decimal entry, and error recovery can be
 tested without rendering anything.
+
+**Components are grouped by what they know, not by file type.** `components/ui/`
+holds pieces with no domain knowledge — `Key` is a styled button with `default`,
+`secondary`, and `primary` variants, and would drop into any project unchanged.
+`components/calculator/` holds the pieces that understand operations and
+operands. The boundary is a real constraint: `ui/` never imports from
+`calculator/`, so the dependency arrow points one way, mirroring how
+`internal/api` depends on `internal/calculator` and never the reverse.
+
+This matters more as a project grows than folder-per-component would. A flat
+`components/` directory stops being scannable somewhere past a dozen entries, and
+splitting each into its own folder only relocates the problem — you still face a
+long list, now of directories. Splitting by responsibility means a new feature
+adds a sibling folder rather than more entries in a shared one, and it answers
+"can I reuse this?" by location alone. For the same reason `state/` holds the
+reducer instead of `hooks/`: it is a pure function, and a folder named `hooks`
+should contain hooks.
 
 **Styling is plain CSS driven by semantic tokens.** No component contains a hex
 value; they reference roles like `--color-accent` and `--color-danger`. Each role

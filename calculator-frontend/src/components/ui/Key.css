@@ -28,22 +28,22 @@
   cursor: not-allowed;
 }
 
-.key--function {
+.key--secondary {
   border-color: transparent;
   background-color: var(--color-key-function);
 }
 
-.key--function:hover:not(:disabled) {
+.key--secondary:hover:not(:disabled) {
   background-color: var(--color-key-function-hover);
 }
 
-.key--accent {
+.key--primary {
   border-color: transparent;
   background-color: var(--color-accent);
   color: var(--color-on-accent);
   font-weight: 700;
 }
 
-.key--accent:hover:not(:disabled) {
+.key--primary:hover:not(:disabled) {
   background-color: var(--color-accent-hover);
 }
