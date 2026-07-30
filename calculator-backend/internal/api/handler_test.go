@@ -61,6 +61,8 @@ func TestOperationEndpoints(t *testing.T) {
 		{name: "add negatives", path: "/api/v1/add", body: `{"value1": -2.5, "value2": -1.5}`, want: -4},
 		{name: "subtract", path: "/api/v1/subtract", body: `{"value1": 12, "value2": 3}`, want: 9},
 		{name: "subtract negative result", path: "/api/v1/subtract", body: `{"value1": 3, "value2": 12}`, want: -9},
+		{name: "multiply", path: "/api/v1/multiply", body: `{"value1": 12, "value2": 3}`, want: 36},
+		{name: "multiply by zero", path: "/api/v1/multiply", body: `{"value1": 12, "value2": 0}`, want: 0},
 	}
 
 	for _, tt := range tests {
@@ -110,6 +112,7 @@ func TestDomainErrors(t *testing.T) {
 		wantCode string
 	}{
 		{name: "add overflow", path: "/api/v1/add", body: `{"value1": 1.7976931348623157e308, "value2": 1.7976931348623157e308}`, wantCode: "result_not_finite"},
+		{name: "multiply overflow", path: "/api/v1/multiply", body: `{"value1": 1.7976931348623157e308, "value2": 2}`, wantCode: "result_not_finite"},
 	}
 
 	for _, tt := range tests {

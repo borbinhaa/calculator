@@ -51,6 +51,29 @@ func TestSubtract(t *testing.T) {
 	}
 }
 
+func TestMultiply(t *testing.T) {
+	tests := []struct {
+		name    string
+		a, b    float64
+		want    float64
+		wantErr error
+	}{
+		{name: "positive numbers", a: 12, b: 3, want: 36},
+		{name: "by zero", a: 12, b: 0, want: 0},
+		{name: "negative by positive", a: -4, b: 5, want: -20},
+		{name: "two negatives", a: -4, b: -5, want: 20},
+		{name: "decimals", a: 2.5, b: 4, want: 10},
+		{name: "overflow", a: math.MaxFloat64, b: 2, wantErr: ErrNotFinite},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Multiply(tt.a, tt.b)
+			assertResult(t, got, err, tt.want, tt.wantErr)
+		})
+	}
+}
+
 func assertResult(t *testing.T, got float64, err error, want float64, wantErr error) {
 	t.Helper()
 	if wantErr != nil {
