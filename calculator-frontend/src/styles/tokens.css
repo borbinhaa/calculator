@@ -1,0 +1,85 @@
+/*
+ * Design tokens.
+ *
+ * Colours are exposed as semantic roles (surface, accent, danger...) rather than
+ * raw values so components never hardcode a hex. Light and dark are defined as a
+ * pair: each theme picks its own foreground for a given background, which is why
+ * --color-on-accent is white on light and near-black on dark — both clear the
+ * WCAG AA contrast threshold against their own accent.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Typography — mono for figures so digits keep a fixed width as they change */
+  --font-display: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.75rem;
+
+  /* Spacing — 4/8px rhythm */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.5rem;
+
+  /* Motion — micro-interactions stay within the 150-300ms band */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --tap-target: 3rem;
+
+  /* Light theme */
+  --color-canvas: #eef0f4;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #f8fafc;
+  --color-text: #0f172a;
+  --color-text-muted: #475569;
+  --color-border: #dfe3ea;
+  --color-key: #ffffff;
+  --color-key-hover: #f1f5f9;
+  --color-key-function: #e2e8f0;
+  --color-key-function-hover: #cbd5e1;
+  --color-accent: #c2410c;
+  --color-accent-hover: #9a3412;
+  --color-on-accent: #ffffff;
+  --color-danger: #b91c1c;
+  --color-danger-surface: #fef2f2;
+  --color-focus: #1d4ed8;
+  --shadow-panel: 0 1px 2px rgb(15 23 42 / 0.06), 0 12px 32px rgb(15 23 42 / 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-canvas: #0b0f14;
+    --color-surface: #161b22;
+    --color-surface-sunken: #10151b;
+    --color-text: #f1f5f9;
+    --color-text-muted: #a3b0c2;
+    --color-border: #2a323d;
+    --color-key: #222932;
+    --color-key-hover: #2c3540;
+    --color-key-function: #323b47;
+    --color-key-function-hover: #3d4854;
+    --color-accent: #f97316;
+    --color-accent-hover: #fb8c3c;
+    --color-on-accent: #1c1210;
+    --color-danger: #fca5a5;
+    --color-danger-surface: #3f1d1d;
+    --color-focus: #93c5fd;
+    --shadow-panel: 0 1px 2px rgb(0 0 0 / 0.4), 0 16px 40px rgb(0 0 0 / 0.45);
+  }
+}
